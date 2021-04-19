@@ -2,10 +2,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todey/widgets/task_list.dart';
 import 'add_task_screen.dart';
+import 'package:todey/model/task.dart';
 
-class TaskScreen extends StatelessWidget {
-  Widget buildButtonSheet(BuildContext context) {
-    return Column();
+class TaskScreen extends StatefulWidget {
+  @override
+  _TaskScreenState createState() => _TaskScreenState();
+}
+
+class _TaskScreenState extends State<TaskScreen> {
+  List<Task> tasks = [
+    //Task(name: 'Buy milk'),
+    //Task(name: 'Buy bread'),
+    //Task(name: 'Buy cheese'),
+  ];
+
+  void deleteTask(index) {
+    setState(() {
+      tasks.removeAt(index);
+    });
   }
 
   @override
@@ -15,7 +29,17 @@ class TaskScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
-              context: context, builder: (context) => AddTaskScreen());
+            context: context,
+            builder: (context) => AddTaskScreen(
+              (newTaskTitle) {
+                setState(() {
+                  tasks.add(Task(name: newTaskTitle));
+                });
+                Navigator.pop(context);
+                //print(newTaskTitle);
+              },
+            ),
+          );
         },
         backgroundColor: Colors.lightBlueAccent,
         child: Icon(
@@ -50,7 +74,7 @@ class TaskScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '12 tasks',
+                  '${tasks.length} tasks',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -70,7 +94,7 @@ class TaskScreen extends StatelessWidget {
                   topRight: Radius.circular(20),
                 ),
               ),
-              child: TasksList(),
+              child: TaskList(tasks, deleteTask),
             ),
           ),
         ],
